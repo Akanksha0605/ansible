@@ -1,0 +1,47 @@
+---
+
+- hosts: uml
+
+  tasks:
+
+    - name: create teacher group
+      
+      group:
+        
+        name=teacher
+        state=present
+
+    - name: create sysadmin group
+      group:
+
+        name=sysadmin
+        state=present
+
+    - name: create Fred user
+      
+      user:
+        
+        name=Fred
+        groups=teacher
+        append=yes
+        shell=/bin/bash
+
+
+    - name: create Barney user
+      
+      user:
+        
+        name=Barney
+        groups=sysadmin
+        append=yes
+        shell=/bin/bash  
+
+
+    - shell: test -e /var/tmp/systemstat
+      register: systemstat
+      ignore_errors: True
+    - copy:
+        Src: /var/tmp/systemstat 
+        Dest: /home/Fred
+        mode: 750 
+      when: systemstat.rc == 0                
